@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat with Gemini AI</title>
+  <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@latest/dist/generative-ai.min.js"></script>
+  <script>
+    const apiKey = 'AIzaSyCCkUfbhsX9ZLZgj7b2r8IIEgBXvZxglTE'; 
+
+    async function sendMessage() {
+      const model = new GoogleGenerativeAI(apiKey);
+      const messageInput = document.getElementById('message-input');
+      const messageText = messageInput.value;
+      
+      // Display user message
+      const chatBox = document.getElementById('chat-box');
+      chatBox.innerHTML += `<p><strong>You:</strong> ${messageText}</p>`;
+
+      // Get response from Gemini
+      const response = await model.generateText({
+        prompt: messageText,
+        model: 'gemini-pro', // Choose your preferred Gemini model
+      });
+      
+      // Display Gemini's response
+      chatBox.innerHTML += `<p><strong>Gemini:</strong> ${response.result}</p>`;
+
+      // Clear input field
+      messageInput.value = '';
+    }
+  </script>
+</head>
+<body>
+  <h1>Chat with Gemini AI</h1>
+  <div id="chat-box"></div>
+  <input type="text" id="message-input">
+  <button onclick="sendMessage()">Send</button>
+</body>
+</html>
