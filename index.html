@@ -2,30 +2,38 @@
 <html>
 <head>
   <title>Chat with Gemini AI</title>
-  <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@latest/dist/generative-ai.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@0.1.11/dist/generative-ai.min.js"></script>
   <script>
-    const apiKey = 'AIzaSyCCkUfbhsX9ZLZgj7b2r8IIEgBXvZxglTE'; 
+    const apiKey = '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'; 
 
     async function sendMessage() {
-      const model = new GoogleGenerativeAI(apiKey);
-      const messageInput = document.getElementById('message-input');
-      const messageText = messageInput.value;
-      
-      // Display user message
-      const chatBox = document.getElementById('chat-box');
-      chatBox.innerHTML += `<p><strong>You:</strong> ${messageText}</p>`;
+      try {
+        // Initialize the model within the function scope
+        const model = new GoogleGenerativeAI(apiKey); 
 
-      // Get response from Gemini
-      const response = await model.generateText({
-        prompt: messageText,
-        model: 'gemini-pro', // Choose your preferred Gemini model
-      });
-      
-      // Display Gemini's response
-      chatBox.innerHTML += `<p><strong>Gemini:</strong> ${response.result}</p>`;
+        const messageInput = document.getElementById('message-input');
+        const messageText = messageInput.value;
 
-      // Clear input field
-      messageInput.value = '';
+        // Display user message
+        const chatBox = document.getElementById('chat-box');
+        chatBox.innerHTML += `<p><strong>You:</strong> ${messageText}</p>`;
+
+        // Get response from Gemini
+        const response = await model.generateText({
+          prompt: messageText,
+          model: 'models/chat-bison-001', // Specify the Gemini model explicitly
+        });
+
+        // Display Gemini's response
+        chatBox.innerHTML += `<p><strong>Gemini:</strong> ${response.result}</p>`;
+      } catch (error) {
+        // Handle any errors gracefully
+        console.error("Error communicating with Gemini API:", error);
+        alert("An error occurred. Please check the console for details.");
+      } finally {
+        // Clear input field
+        messageInput.value = '';
+      }
     }
   </script>
 </head>
