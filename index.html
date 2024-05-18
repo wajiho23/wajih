@@ -2,18 +2,24 @@
 <html>
 <head>
   <title>Chat with Gemini AI</title>
-  <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@0.1.11/dist/generative-ai.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@0.1.11/dist/generative-ai.min.js"></script> 
   <script>
-    const apiKey = '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'; 
+    // Function to check if the Gemini library is loaded
+    function checkGeminiLoaded() {
+      if (typeof GoogleGenerativeAI !== "undefined") {
+        sendMessage();
+      } else {
+        setTimeout(checkGeminiLoaded, 100); // Check again in 100ms
+      }
+    }
+
+    const apiKey = 'AIzaSyCCkUfbhsX9ZLZgj7b2r8IIEgBXvZxglTE'; 
 
     async function sendMessage() {
       try {
-        // Initialize the model within the function scope
         const model = new GoogleGenerativeAI(apiKey); 
-
         const messageInput = document.getElementById('message-input');
         const messageText = messageInput.value;
-
         // Display user message
         const chatBox = document.getElementById('chat-box');
         chatBox.innerHTML += `<p><strong>You:</strong> ${messageText}</p>`;
@@ -21,7 +27,7 @@
         // Get response from Gemini
         const response = await model.generateText({
           prompt: messageText,
-          model: 'models/chat-bison-001', // Specify the Gemini model explicitly
+          model: 'models/chat-bison-001',
         });
 
         // Display Gemini's response
@@ -31,16 +37,16 @@
         console.error("Error communicating with Gemini API:", error);
         alert("An error occurred. Please check the console for details.");
       } finally {
-        // Clear input field
         messageInput.value = '';
       }
     }
+    checkGeminiLoaded() // initiate the call to check for Gemini availability
   </script>
 </head>
 <body>
   <h1>Chat with Gemini AI</h1>
   <div id="chat-box"></div>
   <input type="text" id="message-input">
-  <button onclick="sendMessage()">Send</button>
+  <button onclick="checkGeminiLoaded()">Send</button>
 </body>
 </html>
