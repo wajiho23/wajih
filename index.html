@@ -1,51 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot Demo</title>
+  <title>Chat with Gemini AI</title>
+  <script src="https://cdn.jsdelivr.net/npm/@google/generative-ai@latest/dist/generative-ai.min.js"></script>
+  <script>
+    const apiKey = 'AIzaSyCCkUfbhsX9ZLZgj7b2r8IIEgBXvZxglTE'; // Replace with your actual API key
+    const model = new GoogleGenerativeAI(apiKey);
+
+    async function sendMessage() {
+      const messageInput = document.getElementById('message-input');
+      const messageText = messageInput.value;
+      
+      // Display user message
+      const chatBox = document.getElementById('chat-box');
+      chatBox.innerHTML += `<p><strong>You:</strong> ${messageText}</p>`;
+
+      // Get response from Gemini
+      const response = await model.generateText({
+        prompt: messageText,
+        model: 'gemini-pro', // Choose your preferred Gemini model
+      });
+      
+      // Display Gemini's response
+      chatBox.innerHTML += `<p><strong>Gemini:</strong> ${response.result}</p>`;
+
+      // Clear input field
+      messageInput.value = '';
+    }
+  </script>
 </head>
 <body>
-    <div id="chat-container">
-        <div id="chat-box"></div>
-        <input type="text" id="user-input" placeholder="Type your message...">
-        <button onclick="sendMessage()">Send</button>
-    </div>
-
-    <script>
-        function sendMessage() {
-            var userInput = document.getElementById("user-input").value;
-            if (userInput.trim() === "") return;
-
-            displayMessage(userInput, true);
-
-            fetch('https://api.openai.com/v1/engines/davinci/completions', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer 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' // Replace with your OpenAI API key
-                },
-                body: JSON.stringify({
-                    prompt: userInput,
-                    max_tokens: 150
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                displayMessage(data.choices[0].text.trim(), false);
-            })
-            .catch(error => console.error('Error:', error));
-        }
-
-        function displayMessage(message, isUser) {
-            var chatBox = document.getElementById("chat-box");
-            var messageElement = document.createElement("div");
-            messageElement.className = isUser ? "user-message" : "bot-message";
-            messageElement.innerText = message;
-            chatBox.appendChild(messageElement);
-
-            chatBox.scrollTop = chatBox.scrollHeight;
-        }
-    </script>
+  <h1>Chat with Gemini AI</h1>
+  <div id="chat-box"></div>
+  <input type="text" id="message-input">
+  <button onclick="sendMessage()">Send</button>
 </body>
 </html>
