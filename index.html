@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="style.css">
+
+  <title>Chess Explainer</title>
+  <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css" />
+  <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    .container {
+      display: flex;
+    }
+    .board-container {
+      margin-right: 20px;
+    }
+    #analysis {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chess Explainer</h1>
+
+  <div class="container">
+    <div class="board-container">
+      <div id="board" style="width: 400px"></div>
+    </div>
+
+    <div>
+      <label for="fen">Enter FEN:</label>
+      <input type="text" id="fen" value="rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1">
+      <button id="analyze">Analyze</button>
+      <div id="analysis"></div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize the chessboard
+    const board = Chessboard('board');
+
+    // Analyze button click handler
+    document.getElementById('analyze').addEventListener('click', async () => {
+      const fen = document.getElementById('fen').value;
+      board.position(fen);
+
+      // Call the Gemini API
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ fen: fen })
+      });
+
+      const data = await response.json();
+      displayAnalysis(data);
+    });
+
+    // Function to display the analysis
+    function displayAnalysis(data) {
+      let analysisHtml = '<h2>Analysis</h2>';
+      analysisHtml += `<p><b>Ideas:</b> ${data.ideas}</p>`;
+      analysisHtml += `<p><b>Strategy:</b> ${data.strategy}</p>`;
+      analysisHtml += `<p><b>Plans:</b> ${data.plans}</p>`;
+      analysisHtml += `<p><b>King Safety:</b> ${data.kingSafety}</p>`;
+      document.getElementById('analysis').innerHTML = analysisHtml;
+    }
+  </script>
+</body>
+</html>
